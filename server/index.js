@@ -1,6 +1,6 @@
-dotenv.config();
 const dotenv = require("dotenv");
 const express = require("express");
+dotenv.config();
 const app = express();
 const connectToDB = require("./Startup/db");
 const cors = require("cors");
@@ -50,6 +50,7 @@ io.on("connection", (socket) => {
     console.log(`${username} joined room: ${roomId}`);
   });
 
+  //Handles code change
   socket.on("code-change", ({ roomId, code, username, position }) => {
     // Broadcast to others in room (not the sender)
     socket.to(roomId).emit("code-update", { code, username, position });

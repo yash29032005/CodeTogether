@@ -89,10 +89,10 @@ const Modal = ({ setIsOpen }) => {
         </div>
 
         {/* Footer */}
-        <div className="mt-4 flex justify-end gap-3">
+        <div className="mt-3 flex justify-end gap-3">
           <button
             onClick={joinRoom}
-            className="px-8 py-2 bg-green-600 hover:bg-green-500 rounded-lg transition duration-200 text-white"
+            className="px-8 py-2 bg-gradient-to-r from-purple-950 to-green-800 hover:bg-green-800 rounded-lg transition duration-200 text-white"
           >
             Join Room
           </button>

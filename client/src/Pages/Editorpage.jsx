@@ -1,13 +1,16 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import Bottomsection from "../Components/Secondpage/Bottomsection";
 import Leftsection from "../Components/Secondpage/Leftsection/Leftsection";
 import Middlesection from "../Components/Secondpage/Middlesection";
 import Rightsection from "../Components/Secondpage/Righsection/Rightsection";
 import Topsection from "../Components/Secondpage/Topsection";
-import { UserContext } from "../Context/UserContext";
 import socket from "../Socket/socket";
+import { useSearchParams } from "react-router-dom";
 
 function EditorPage() {
+  const [searchParams] = useSearchParams();
+  const roomId = searchParams.get("roomId");
+  const username = searchParams.get("username");
   const [left, setLeft] = useState(false);
   const [right, setRight] = useState(false);
 
@@ -33,14 +36,9 @@ function EditorPage() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const { setUsers } = useContext(UserContext);
-
   useEffect(() => {
-    socket.on("room-users", (users) => {
-      setUsers(users);
-    });
-    return () => socket.off("room-users");
-  }, [setUsers]);
+    socket.emit("join-room", { roomId, username });
+  }, [roomId, username]);
 
   return (
     <div style={{ minHeight: "100vh" }}>
