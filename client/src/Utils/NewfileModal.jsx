@@ -1,9 +1,16 @@
 import React from "react";
+import { toast } from "react-toastify";
 
-const NewfileModal = ({ setOpen, fileName, setFileName, handleAdd }) => {
+const NewfileModal = ({
+  setOpen,
+  fileName,
+  setFileName,
+  handleAdd,
+  setActiveFile,
+}) => {
   return (
     <div
-      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 transition-opacity duration-300 md:mx-0 mx-5"
+      className="z-50 fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center transition-opacity duration-300 md:mx-0 mx-5"
       onClick={() => setOpen(false)}
     >
       <div
@@ -45,9 +52,15 @@ const NewfileModal = ({ setOpen, fileName, setFileName, handleAdd }) => {
           </button>
           <button
             onClick={() => {
-              handleAdd();
-              setOpen(false);
-              setFileName("");
+              if (!fileName.trim()) {
+                toast.error("Enter file name");
+                return;
+              } else {
+                handleAdd();
+                setOpen(false);
+                setActiveFile(fileName);
+                setFileName(null);
+              }
             }}
             className="px-5 py-2 bg-gradient-to-r from-purple-950 to-green-800 hover:bg-green-800 rounded-lg transition duration-200 text-white"
           >

@@ -12,6 +12,8 @@ export default function Chat() {
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
+    socket.emit("join-room", { roomId, username });
+
     socket.on("chat-history", (history) => {
       setMessages(history);
     });

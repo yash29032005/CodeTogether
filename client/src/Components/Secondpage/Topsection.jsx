@@ -25,6 +25,7 @@ const Topsection = ({ openRight }) => {
 
   const handleGoBack = () => {
     socket.emit("leave-room");
+    localStorage.removeItem("files");
     navigate("/");
   };
 
