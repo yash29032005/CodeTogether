@@ -9,7 +9,7 @@ const Middlesection = () => {
   const { code, setCode } = useContext(OutputContext);
   const { theme, language } = useContext(EditorSettingsContext);
   const [searchParams] = useSearchParams();
-  const roomId = searchParams.get("roomid");
+  const roomId = searchParams.get("roomId");
   const username = searchParams.get("username");
 
   const editorRef = useRef(null);
