@@ -54,7 +54,9 @@ const Middlesection = () => {
 
       // update only that file
       setFiles((prev) =>
-        prev.map((f) => (f.name === fileName ? { ...f, content } : f))
+        prev.map((f) =>
+          f.name === fileName ? { ...f, content, saved: false } : f
+        )
       );
 
       if (fileName !== activeFile) return;

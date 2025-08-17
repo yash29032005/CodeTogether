@@ -130,7 +130,9 @@ const Filelist = () => {
               activeFile === file.name ? "bg-gray-800" : "bg-gray-900"
             }`}
           >
-            {file.name}
+            <p className="truncate w-10/12" title={file.name}>
+              {file.name}
+            </p>
             {file.saved ? (
               <button
                 onClick={(e) => {

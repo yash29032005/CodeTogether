@@ -13,7 +13,7 @@ export const FileProvider = ({ children }) => {
     },
   ]);
 
-  const [activeFile, setActiveFile] = useState(null);
+  const [activeFile, setActiveFile] = useState(files[0]?.name || null);
 
   const code = files.find((f) => f.name === activeFile)?.content || "";
 
