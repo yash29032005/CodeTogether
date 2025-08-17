@@ -42,16 +42,32 @@ io.on("connection", (socket) => {
 
     rooms[roomId].users.add(username);
 
-    // Send previous chat history
-    const history = await Messages.find({ roomId }).sort({ timestamp: 1 });
-    socket.emit("chat-history", history);
-
     // Send current room data (users + files)
     io.to(roomId).emit("room-users", Array.from(rooms[roomId].users));
     socket.emit("file-update", { files: rooms[roomId].files });
 
+    // Send previous chat history
+    const history = await Messages.find({ roomId }).sort({ timestamp: 1 });
+    socket.emit("chat-history", history);
+
     console.log(`${username} joined room: ${roomId}`);
   });
+
+  // Chat
+  socket.on(
+    "chat-message",
+    async ({ roomId, username, message, timestamp }) => {
+      const msgData = {
+        roomId,
+        username,
+        message,
+        timestamp: timestamp ? new Date(timestamp) : new Date(),
+      };
+
+      const savedMessage = await Messages.create(msgData);
+      io.to(roomId).emit("chat-update", savedMessage);
+    }
+  );
 
   // File update (add / delete / rename etc.)
   socket.on("file-update", ({ roomId, files, username }) => {
@@ -78,22 +94,6 @@ io.on("connection", (socket) => {
           position,
         });
       }
-    }
-  );
-
-  // Chat
-  socket.on(
-    "chat-message",
-    async ({ roomId, username, message, timestamp }) => {
-      const msgData = {
-        roomId,
-        username,
-        message,
-        timestamp: timestamp ? new Date(timestamp) : new Date(),
-      };
-
-      const savedMessage = await Messages.create(msgData);
-      io.to(roomId).emit("chat-update", savedMessage);
     }
   );
 

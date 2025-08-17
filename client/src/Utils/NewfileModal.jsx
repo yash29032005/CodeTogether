@@ -1,9 +1,32 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { toast } from "react-toastify";
 import { FileContext } from "../Context/FileContext";
 
 const NewfileModal = ({ setOpen, handleAdd, fileName, setFileName }) => {
   const { language, setLanguage } = useContext(FileContext);
+
+  const extensions = {
+    plaintext: ".txt",
+    java: ".java",
+    javascript: ".js",
+    python: ".py",
+    cpp: ".cpp",
+    css: ".css",
+    typescript: ".ts",
+    sql: ".sql",
+    php: ".php",
+    ruby: ".rb",
+    go: ".go",
+    rust: ".rs",
+    csharp: ".cs",
+    shell: ".sh",
+  };
+
+  // When modal opens, set default name
+  useEffect(() => {
+    setFileName(`example${extensions[language] || ""}`);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [language, setFileName]);
 
   return (
     <div
@@ -33,12 +56,10 @@ const NewfileModal = ({ setOpen, handleAdd, fileName, setFileName }) => {
           <input
             type="text"
             value={fileName}
-            onChange={(e) => {
-              setFileName(e.target.value);
-            }}
+            onChange={(e) => setFileName(e.target.value)}
             className="p-2 bg-gray-900 rounded-lg border border-gray-700 focus:outline-none 
             focus:ring-2 focus:ring-green-800 placeholder-gray-500 text-sm"
-            placeholder="example.js"
+            placeholder="Enter file name"
           />
         </div>
 
@@ -50,19 +71,11 @@ const NewfileModal = ({ setOpen, handleAdd, fileName, setFileName }) => {
             onChange={(e) => setLanguage(e.target.value)}
             className="w-full p-2 rounded bg-gray-900 "
           >
-            <option value="javascript">JavaScript</option>
-            <option value="python">Python</option>
-            <option value="cpp">C++</option>
-            <option value="css">CSS</option>
-            <option value="java">Java</option>
-            <option value="typescript">TypeScript</option>
-            <option value="sql">SQL</option>
-            <option value="php">PHP</option>
-            <option value="ruby">Ruby</option>
-            <option value="go">Go</option>
-            <option value="rust">Rust</option>
-            <option value="csharp">C#</option>
-            <option value="shell">Shell</option>
+            {Object.keys(extensions).map((lang) => (
+              <option key={lang} value={lang}>
+                {lang.charAt(0).toUpperCase() + lang.slice(1)}
+              </option>
+            ))}
           </select>
         </div>
 
@@ -79,11 +92,10 @@ const NewfileModal = ({ setOpen, handleAdd, fileName, setFileName }) => {
               if (!fileName.trim()) {
                 toast.error("Enter file name");
                 return;
-              } else {
-                handleAdd();
-                setOpen(false);
-                setFileName(null);
               }
+              handleAdd();
+              setOpen(false);
+              setFileName("");
             }}
             className="px-5 py-2 bg-gradient-to-r from-purple-950 to-green-800 hover:bg-green-800 rounded-lg transition duration-200 text-white"
           >

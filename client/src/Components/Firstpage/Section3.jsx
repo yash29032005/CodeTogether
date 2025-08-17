@@ -29,11 +29,11 @@ function Section3() {
         </p>
 
         {/* Button */}
-        <Link to="/editor">
+        <a href="#section1">
           <button className="mx-auto mt-6 flex items-center gap-2 hover:scale-110 duration-900 ease-in-out px-6 py-3 bg-gradient-to-r from-purple-950 to-green-800 rounded-lg font-medium transition text-white">
             Get Started Free <FaArrowRight />
           </button>
-        </Link>
+        </a>
       </div>
     </div>
   );

@@ -8,7 +8,10 @@ import Modal from "../../Utils/Modal";
 const Section1 = () => {
   const [isOpen, setIsOpen] = useState(false);
   return (
-    <div className="min-h-screen md:pt-0 pt-[60px] bg-black text-white flex items-center justify-center px-8">
+    <div
+      id="section1"
+      className="min-h-screen md:pt-0 pt-[60px] bg-black text-white flex items-center justify-center px-8"
+    >
       <div className="md:w-10/12 w-full grid md:grid-cols-2 gap-12 items-center">
         {/* Left Section - Slide from Left */}
         <div>
@@ -34,9 +37,6 @@ const Section1 = () => {
               Start Coding
             </button>
             {isOpen && <Modal setIsOpen={setIsOpen} />}
-            <button className="px-6 py-3 bg-gray-900 rounded-lg font-medium hover:bg-gray-700 transition">
-              Watch Demo
-            </button>
           </div>
         </div>
 
