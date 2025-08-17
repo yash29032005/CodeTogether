@@ -5,48 +5,68 @@ import Editor from "@monaco-editor/react";
 import { FileContext } from "../../Context/FileContext";
 
 const Middlesection = () => {
-  const { code, setCode, theme, language } = useContext(FileContext);
+  const { code, theme, language, setFiles, activeFile } =
+    useContext(FileContext);
   const [searchParams] = useSearchParams();
   const roomId = searchParams.get("roomId");
   const username = searchParams.get("username");
 
   const editorRef = useRef(null);
 
-  // Join room on load
+  // ✅ Join room
   useEffect(() => {
     if (roomId && username) {
       socket.emit("join-room", { roomId, username });
     }
   }, [roomId, username]);
 
-  // Save editor ref
+  // ✅ Save editor ref
   const handleEditorDidMount = (editor) => {
     editorRef.current = editor;
   };
 
-  // Send code changes
+  // ✅ Send changes
   const handleEditorChange = (value) => {
-    setCode(value);
-
+    setFiles((prev) =>
+      prev.map((f) =>
+        f.name === activeFile ? { ...f, content: value, saved: false } : f
+      )
+    );
     const position = editorRef.current.getPosition();
-    socket.emit("code-change", { roomId, code: value, username, position });
+    socket.emit("file-content-update", {
+      roomId,
+      fileName: activeFile,
+      content: value,
+      username,
+      position,
+    });
   };
 
-  // Listen for updates
+  // ✅ Listen for updates
   useEffect(() => {
-    socket.on("code-update", ({ code: newCode, username: user, position }) => {
-      setCode(newCode);
+    const handleFileContentUpdate = ({
+      fileName,
+      content,
+      username: user,
+      position,
+    }) => {
+      if (!fileName || !content) return;
+
+      // update only that file
+      setFiles((prev) =>
+        prev.map((f) => (f.name === fileName ? { ...f, content } : f))
+      );
+
+      if (fileName !== activeFile) return;
 
       if (!editorRef.current || !position) return;
       const monacoEditor = editorRef.current;
 
-      // 🔹 Remove old widget if exists
+      // --- Remove old widget if exists ---
       const widgetId = `remote-user-${user}`;
-      const existingWidget = monacoEditor._contentWidgets[widgetId];
-      if (existingWidget)
-        monacoEditor.removeContentWidget(existingWidget.widget);
+      monacoEditor.removeContentWidget({ getId: () => widgetId });
 
-      // 🔹 Create widget
+      // --- Create widget ---
       const widget = {
         getId: () => widgetId,
         getDomNode: () => {
@@ -57,6 +77,7 @@ const Middlesection = () => {
           node.style.fontSize = "12px";
           node.style.padding = "1px 4px";
           node.style.borderRadius = "4px";
+          node.style.pointerEvents = "none";
           return node;
         },
         getPosition: () => ({
@@ -70,17 +91,15 @@ const Middlesection = () => {
 
       monacoEditor.addContentWidget(widget);
 
-      // 🔹 Auto-remove after 2s (only show when typing)
+      // auto remove after 3s
       setTimeout(() => {
         monacoEditor.removeContentWidget(widget);
       }, 3000);
-    });
+    };
 
-    return () => socket.off("code-update");
-  }, [setCode]);
-
-  console.log(code);
-  console.log(language);
+    socket.on("file-content-update", handleFileContentUpdate);
+    return () => socket.off("file-content-update", handleFileContentUpdate);
+  }, [activeFile, setFiles]);
 
   return (
     <div className="md:w-7/12 w-full bg-black text-white h-full">

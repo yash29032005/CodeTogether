@@ -25,38 +25,63 @@ app.use(
 );
 
 app.use("/api", promptRoute);
-
-const rooms = {}; // roomId -> Set of usernames
+let rooms = {}; // roomId -> { users: Set, files: [] }
 
 io.on("connection", (socket) => {
   console.log(`⚡ New client connected: ${socket.id}`);
 
-  // Create / join a room
+  // Join room
   socket.on("join-room", async ({ roomId, username }) => {
     socket.join(roomId);
     socket.username = username;
     socket.roomId = roomId;
 
-    if (!rooms[roomId]) rooms[roomId] = new Set();
-    rooms[roomId].add(username);
+    if (!rooms[roomId]) {
+      rooms[roomId] = { users: new Set(), files: [] };
+    }
 
-    // Send previous messages to the joining user
+    rooms[roomId].users.add(username);
+
+    // Send previous chat history
     const history = await Messages.find({ roomId }).sort({ timestamp: 1 });
     socket.emit("chat-history", history);
 
-    // Send updated user list
-    io.to(roomId).emit("room-users", Array.from(rooms[roomId]));
+    // Send current room data (users + files)
+    io.to(roomId).emit("room-users", Array.from(rooms[roomId].users));
+    socket.emit("file-update", { files: rooms[roomId].files });
 
     console.log(`${username} joined room: ${roomId}`);
   });
 
-  //Handles code change
-  socket.on("code-change", ({ roomId, code, username, position }) => {
-    // Broadcast to others in room (not the sender)
-    socket.to(roomId).emit("code-update", { code, username, position });
+  // File update (add / delete / rename etc.)
+  socket.on("file-update", ({ roomId, files, username }) => {
+    if (rooms[roomId]) {
+      rooms[roomId].files = files;
+      socket.to(roomId).emit("file-update", { files, username });
+      console.log(`📂 File update in ${roomId} by ${username}`);
+    }
   });
 
-  // Handle chat messages
+  // File content update (live typing)
+  socket.on(
+    "file-content-update",
+    ({ roomId, fileName, content, username, position }) => {
+      if (rooms[roomId]) {
+        rooms[roomId].files = rooms[roomId].files.map((f) =>
+          f.name === fileName ? { ...f, content, saved: false } : f
+        );
+
+        socket.to(roomId).emit("file-content-update", {
+          fileName,
+          content,
+          username,
+          position,
+        });
+      }
+    }
+  );
+
+  // Chat
   socket.on(
     "chat-message",
     async ({ roomId, username, message, timestamp }) => {
@@ -76,12 +101,14 @@ io.on("connection", (socket) => {
   socket.on("leave-room", () => {
     const { roomId, username } = socket;
     if (roomId && rooms[roomId]) {
-      rooms[roomId].delete(username);
-      io.to(roomId).emit("room-users", Array.from(rooms[roomId]));
+      rooms[roomId].users.delete(username);
+
+      io.to(roomId).emit("room-users", Array.from(rooms[roomId].users));
       console.log(`${username} left room: ${roomId}`);
+
       socket.leave(roomId);
 
-      if (rooms[roomId].size === 0) {
+      if (rooms[roomId].users.size === 0) {
         delete rooms[roomId];
         Messages.deleteMany({ roomId }).then(() =>
           console.log(`🗑 Deleted messages for inactive room ${roomId}`)
@@ -95,8 +122,8 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     const { roomId, username } = socket;
     if (roomId && rooms[roomId]) {
-      rooms[roomId].delete(username);
-      io.to(roomId).emit("room-users", Array.from(rooms[roomId]));
+      rooms[roomId].users.delete(username);
+      io.to(roomId).emit("room-users", Array.from(rooms[roomId].users));
     }
     console.log(
       `❌ ${username || "Unknown"} disconnected from ${roomId || "N/A"}`

@@ -13,9 +13,9 @@ export const FileProvider = ({ children }) => {
     },
   ]);
 
-  const [activeFile, setActiveFile] = useState(0);
+  const [activeFile, setActiveFile] = useState(null);
 
-  const [code, setCode] = useState("");
+  const code = files.find((f) => f.name === activeFile)?.content || "";
 
   const [output, setOutput] = useState("Execute something");
 
@@ -59,7 +59,6 @@ export const FileProvider = ({ children }) => {
         activeFile,
         setActiveFile,
         code,
-        setCode,
         output,
         runCode,
         theme,

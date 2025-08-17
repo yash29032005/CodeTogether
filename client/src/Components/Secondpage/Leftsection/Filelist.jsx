@@ -1,12 +1,16 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import NewfileModal from "../../../Utils/NewfileModal";
-import { useEffect } from "react";
 import { FileContext } from "../../../Context/FileContext";
 import { toast } from "react-toastify";
+import { useSearchParams } from "react-router-dom";
+import socket from "../../../Socket/socket";
 
 const Filelist = () => {
   const [open, setOpen] = useState(false);
   const [fileName, setFileName] = useState("");
+  const [searchParams] = useSearchParams();
+  const roomId = searchParams.get("roomId");
+  const username = searchParams.get("username");
 
   const {
     files,
@@ -18,65 +22,90 @@ const Filelist = () => {
     code,
   } = useContext(FileContext);
 
+  // 🔹 Sync file updates from socket
   useEffect(() => {
-    localStorage.setItem("files", JSON.stringify(files));
-  }, [files]);
+    socket.on("file-update", ({ files }) => {
+      setFiles(files);
+    });
 
+    return () => socket.off("file-update");
+  }, [setFiles]);
+
+  // 🔹 Add new file
   const handleAdd = () => {
-    setFiles((prev) => [
-      ...prev,
+    const exists = files.some((f) => f.name === fileName.trim());
+    if (exists) {
+      toast.error("File with this name already exists!");
+      return;
+    }
+
+    const newFiles = [
+      ...files,
       {
         name: fileName,
         content: "",
         lang: language,
         saved: false,
       },
-    ]);
+    ];
+    setFiles(newFiles);
     setActiveFile(fileName);
+
+    socket.emit("file-update", { roomId, files: newFiles });
+    setOpen(false);
+    setFileName("");
   };
 
-  const handleDelete = () => {
-    setFiles((prev) => {
-      if (prev.length === 1) {
-        toast.warning("At least one file must remain in the workspace.");
-        return prev; // don't delete
-      }
-    });
+  // 🔹 Delete file
+  const handleDelete = (name) => {
+    if (files.length === 1) {
+      toast.warning("At least one file must remain in the workspace.");
+      return;
+    }
+    const updatedFiles = files.filter((f) => f.name !== name);
+    setFiles(updatedFiles);
+
+    // if deleted file was active, switch to first file
+    if (activeFile === name && updatedFiles.length > 0) {
+      setActiveFile(updatedFiles[0].name);
+      setLanguage(updatedFiles[0].lang);
+    }
+
+    socket.emit("file-update", { roomId, files: updatedFiles, username });
   };
 
+  // 🔹 Save file with Ctrl + S
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.ctrlKey && e.key === "s") {
         e.preventDefault();
         if (activeFile) {
-          setFiles((prev) =>
-            prev.map((file) =>
-              file.name === activeFile
-                ? { ...file, content: code, saved: true }
-                : file
-            )
+          const updatedFiles = files.map((file) =>
+            file.name === activeFile
+              ? { ...file, content: code, saved: true }
+              : file
           );
+          setFiles(updatedFiles);
+          socket.emit("file-update", { roomId, files: updatedFiles, username });
         }
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [activeFile, setFiles, code]);
+  }, [activeFile, files, code, roomId, username, setFiles]);
 
   return (
     <div>
       <div className="flex items-center justify-between border-b border-gray-800 px-2 py-1">
         <p className="text-xs md:text-sm font-bold">Yash's Workspace</p>
         <button
-          onClick={() => {
-            setOpen(true);
-          }}
+          onClick={() => setOpen(true)}
           className="bg-gray-900 px-1 hover:bg-gray-800"
         >
           +
         </button>
-        {open ? (
+        {open && (
           <NewfileModal
             setOpen={setOpen}
             fileName={fileName}
@@ -84,8 +113,9 @@ const Filelist = () => {
             handleAdd={handleAdd}
             setActiveFile={setActiveFile}
           />
-        ) : null}
+        )}
       </div>
+
       {files.map((file, index) => (
         <div
           key={index}
@@ -103,7 +133,10 @@ const Filelist = () => {
             {file.name}
             {file.saved ? (
               <button
-                onClick={() => handleDelete(file.name)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDelete(file.name);
+                }}
                 className="bg-red-900 px-1 rounded-sm"
               >
                 x
