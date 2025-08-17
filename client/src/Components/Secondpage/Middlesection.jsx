@@ -5,31 +5,12 @@ import Editor from "@monaco-editor/react";
 import { FileContext } from "../../Context/FileContext";
 
 const Middlesection = () => {
-  const { code, setCode, theme, language, files, setFiles, activeFile } =
-    useContext(FileContext);
+  const { code, setCode, theme, language } = useContext(FileContext);
   const [searchParams] = useSearchParams();
   const roomId = searchParams.get("roomId");
   const username = searchParams.get("username");
 
   const editorRef = useRef(null);
-
-  useEffect(() => {
-    if (activeFile !== null && files[activeFile]) {
-      const currentContent = files[activeFile].content || "";
-
-      if (currentContent !== code) {
-        // update editor content
-        setCode(currentContent);
-
-        // mark as unsaved
-        setFiles((prev) =>
-          prev.map((file, i) =>
-            i === activeFile ? { ...file, saved: false } : file
-          )
-        );
-      }
-    }
-  }, [activeFile, code, files, setCode, setFiles]);
 
   // Join room on load
   useEffect(() => {
@@ -46,18 +27,6 @@ const Middlesection = () => {
   // Send code changes
   const handleEditorChange = (value) => {
     setCode(value);
-
-    setFiles((prev) =>
-      prev.map((file, i) =>
-        i === activeFile
-          ? {
-              ...file,
-              content: value,
-              saved: false, // true if matches original
-            }
-          : file
-      )
-    );
 
     const position = editorRef.current.getPosition();
     socket.emit("code-change", { roomId, code: value, username, position });
@@ -119,7 +88,7 @@ const Middlesection = () => {
         <Editor
           height="100%"
           theme={theme}
-          defaultLanguage={language}
+          language={language}
           value={code}
           onChange={handleEditorChange}
           onMount={handleEditorDidMount}
