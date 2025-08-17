@@ -7,20 +7,16 @@ import {
 import React, { useContext, useState } from "react";
 import { FaSave } from "react-icons/fa";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { OutputContext } from "../../Context/OutputContext";
+import { FileContext } from "../../Context/FileContext";
 import { UserContext } from "../../Context/UserContext";
 import socket from "../../Socket/socket";
-import { EditorSettingsContext } from "../../Context/EditorsettingsContext";
 import SettingModal from "../../Utils/SettingModal";
 import { toast } from "react-toastify";
 
 const Topsection = ({ openRight }) => {
-  const { code, runCode } = useContext(OutputContext);
+  const { code, runCode, language } = useContext(FileContext);
   const { users } = useContext(UserContext);
   const navigate = useNavigate();
-  const { theme, setTheme, language, setLanguage } = useContext(
-    EditorSettingsContext
-  );
   const [isOpen, setIsOpen] = useState(false);
 
   const handleGoBack = () => {
@@ -112,14 +108,7 @@ const Topsection = ({ openRight }) => {
         >
           <CogIcon className="h-5 w-5" />
         </button>
-        <SettingModal
-          isOpen={isOpen}
-          theme={theme}
-          setTheme={setTheme}
-          language={language}
-          setLanguage={setLanguage}
-          setIsOpen={setIsOpen}
-        />
+        <SettingModal isOpen={isOpen} setIsOpen={setIsOpen} />
       </div>
     </div>
   );

@@ -29,7 +29,7 @@ const Rightsection = ({ right, setRight }) => {
 
   return (
     <div
-      className={`md:w-3/12 w-0 border border-gray-800 bg-black md:flex flex-col z-10 h-full
+      className={`md:w-3/12 border border-gray-800 bg-black md:flex flex-col z-5 h-full
        ${right ? "fixed top-0 right-0 w-6/12" : "hidden md:flex"}`}
     >
       <button

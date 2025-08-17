@@ -2,17 +2,34 @@ import { useEffect, useContext, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import socket from "../../Socket/socket";
 import Editor from "@monaco-editor/react";
-import { OutputContext } from "../../Context/OutputContext";
-import { EditorSettingsContext } from "../../Context/EditorsettingsContext";
+import { FileContext } from "../../Context/FileContext";
 
 const Middlesection = () => {
-  const { code, setCode } = useContext(OutputContext);
-  const { theme, language } = useContext(EditorSettingsContext);
+  const { code, setCode, theme, language, files, setFiles, activeFile } =
+    useContext(FileContext);
   const [searchParams] = useSearchParams();
   const roomId = searchParams.get("roomId");
   const username = searchParams.get("username");
 
   const editorRef = useRef(null);
+
+  useEffect(() => {
+    if (activeFile !== null && files[activeFile]) {
+      const currentContent = files[activeFile].content || "";
+
+      if (currentContent !== code) {
+        // update editor content
+        setCode(currentContent);
+
+        // mark as unsaved
+        setFiles((prev) =>
+          prev.map((file, i) =>
+            i === activeFile ? { ...file, saved: false } : file
+          )
+        );
+      }
+    }
+  }, [activeFile, code, files, setCode, setFiles]);
 
   // Join room on load
   useEffect(() => {
@@ -29,6 +46,18 @@ const Middlesection = () => {
   // Send code changes
   const handleEditorChange = (value) => {
     setCode(value);
+
+    setFiles((prev) =>
+      prev.map((file, i) =>
+        i === activeFile
+          ? {
+              ...file,
+              saved: value === file.content, // true if matches original
+            }
+          : file
+      )
+    );
+
     const position = editorRef.current.getPosition();
     socket.emit("code-change", { roomId, code: value, username, position });
   };
@@ -79,6 +108,9 @@ const Middlesection = () => {
 
     return () => socket.off("code-update");
   }, [setCode]);
+
+  console.log(code);
+  console.log(language);
 
   return (
     <div className="md:w-7/12 w-full bg-black text-white h-full">

@@ -1,23 +1,23 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import NewfileModal from "../../../Utils/NewfileModal";
 import { useEffect } from "react";
+import { FileContext } from "../../../Context/FileContext";
+import { toast } from "react-toastify";
 
 const Filelist = () => {
   const [open, setOpen] = useState(false);
   const [fileName, setFileName] = useState("");
-  const [activeFile, setActiveFile] = useState(null);
-  const [files, setFiles] = useState(() => {
-    const stored = localStorage.getItem("files");
-    return stored
-      ? JSON.parse(stored)
-      : [
-          {
-            name: "first.js",
-            content: "console.log('Hello World');",
-            saved: true,
-          },
-        ];
-  });
+
+  const {
+    files,
+    setFiles,
+    activeFile,
+    setActiveFile,
+    language,
+    setLanguage,
+    setCode,
+    code,
+  } = useContext(FileContext);
 
   useEffect(() => {
     localStorage.setItem("files", JSON.stringify(files));
@@ -26,12 +26,34 @@ const Filelist = () => {
   const handleAdd = () => {
     setFiles((prev) => [
       ...prev,
-      { name: fileName, content: "", saved: false },
+      {
+        name: fileName,
+        content: "",
+        lang: language,
+        saved: false,
+      },
     ]);
+    setActiveFile(fileName);
   };
 
   const handleDelete = (name) => {
-    setFiles((prev) => prev.filter((file) => file.name !== name));
+    setFiles((prev) => {
+      if (prev.length === 1) {
+        toast.warning("At least one file must remain in the workspace.");
+        return prev; // don't delete
+      }
+
+      const updated = prev.filter((file) => file.name !== name);
+
+      // if the deleted file was active, set activeFile to first file
+      if (activeFile === name && updated.length > 0) {
+        setActiveFile(updated[0].name);
+        setCode(updated[0].content);
+        setLanguage(updated[0].lang);
+      }
+
+      return updated;
+    });
   };
 
   useEffect(() => {
@@ -41,7 +63,9 @@ const Filelist = () => {
         if (activeFile) {
           setFiles((prev) =>
             prev.map((file) =>
-              file.name === activeFile ? { ...file, saved: true } : file
+              file.name === activeFile
+                ? { ...file, content: code, saved: true }
+                : file
             )
           );
         }
@@ -50,7 +74,7 @@ const Filelist = () => {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [activeFile]);
+  }, [activeFile, setFiles, code]);
 
   return (
     <div>
@@ -75,9 +99,15 @@ const Filelist = () => {
         ) : null}
       </div>
       {files.map((file, index) => (
-        <div onClick={() => setActiveFile(file.name)}>
+        <div
+          key={index}
+          onClick={() => {
+            setActiveFile(file.name);
+            setLanguage(file.lang);
+            setCode(file.content);
+          }}
+        >
           <p
-            key={index}
             className={`flex justify-between items-center w-auto text-xs m-1 px-3 py-2 
             hover:bg-gray-800 rounded-md ${
               activeFile === file.name ? "bg-gray-800" : "bg-gray-900"

@@ -1,20 +1,19 @@
-import React from "react";
+import React, { useContext } from "react";
 import { toast } from "react-toastify";
+import { FileContext } from "../Context/FileContext";
 
-const NewfileModal = ({
-  setOpen,
-  fileName,
-  setFileName,
-  handleAdd,
-  setActiveFile,
-}) => {
+const NewfileModal = ({ setOpen, handleAdd, fileName, setFileName }) => {
+  const { language, setLanguage } = useContext(FileContext);
+
   return (
     <div
-      className="z-50 fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center transition-opacity duration-300 md:mx-0 mx-5"
+      className="z-10 fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center 
+      transition-opacity duration-300 md:mx-0 mx-5"
       onClick={() => setOpen(false)}
     >
       <div
-        className="bg-gray-700 rounded-2xl p-6 w-full max-w-md shadow-2xl border border-gray-700 transform transition-all scale-100 hover:scale-[1.01]"
+        className="bg-gray-700 rounded-2xl p-6 w-full max-w-md shadow-2xl border border-gray-700 
+        transform transition-all scale-100 hover:scale-[1.01]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -37,9 +36,34 @@ const NewfileModal = ({
             onChange={(e) => {
               setFileName(e.target.value);
             }}
-            className="p-2 bg-gray-900 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 placeholder-gray-500 text-sm"
+            className="p-2 bg-gray-900 rounded-lg border border-gray-700 focus:outline-none 
+            focus:ring-2 focus:ring-green-800 placeholder-gray-500 text-sm"
             placeholder="example.js"
           />
+        </div>
+
+        {/* Language Selector */}
+        <div className="mt-2 text-gray-300 flex flex-col gap-3 ">
+          <label className="text-gray-400 ">Language:</label>
+          <select
+            value={language}
+            onChange={(e) => setLanguage(e.target.value)}
+            className="w-full p-2 rounded bg-gray-900 "
+          >
+            <option value="javascript">JavaScript</option>
+            <option value="python">Python</option>
+            <option value="cpp">C++</option>
+            <option value="css">CSS</option>
+            <option value="java">Java</option>
+            <option value="typescript">TypeScript</option>
+            <option value="sql">SQL</option>
+            <option value="php">PHP</option>
+            <option value="ruby">Ruby</option>
+            <option value="go">Go</option>
+            <option value="rust">Rust</option>
+            <option value="csharp">C#</option>
+            <option value="shell">Shell</option>
+          </select>
         </div>
 
         {/* Footer */}
@@ -58,7 +82,6 @@ const NewfileModal = ({
               } else {
                 handleAdd();
                 setOpen(false);
-                setActiveFile(fileName);
                 setFileName(null);
               }
             }}

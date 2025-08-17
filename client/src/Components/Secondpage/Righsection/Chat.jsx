@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import socket from "../../../Socket/socket";
-import { ChatContext } from "../../../Context/MessageContext";
+import { ChatContext } from "../../../Context/ChatContext";
 import { useSearchParams } from "react-router-dom";
 
 export default function Chat() {

@@ -1,11 +1,26 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useState } from "react";
 
-export const OutputContext = createContext();
+export const FileContext = createContext();
 
-export const OutputProvider = ({ children }) => {
-  const [code, setCode] = useState(`console.log("Hello")`);
+export const FileProvider = ({ children }) => {
+  const [files, setFiles] = useState([
+    {
+      name: "first.js",
+      content: "console.log('Hello World');",
+      lang: "javascript",
+      saved: true,
+    },
+  ]);
+
+  const [activeFile, setActiveFile] = useState(0);
+
+  const [code, setCode] = useState(files[0].content);
+
   const [output, setOutput] = useState("Execute something");
+
+  const [theme, setTheme] = useState("vs-dark");
+  const [language, setLanguage] = useState("javascript");
 
   const runCode = () => {
     let capturedOutput = "";
@@ -37,8 +52,23 @@ export const OutputProvider = ({ children }) => {
   };
 
   return (
-    <OutputContext.Provider value={{ code, setCode, output, runCode }}>
+    <FileContext.Provider
+      value={{
+        files,
+        setFiles,
+        activeFile,
+        setActiveFile,
+        code,
+        setCode,
+        output,
+        runCode,
+        theme,
+        setTheme,
+        language,
+        setLanguage,
+      }}
+    >
       {children}
-    </OutputContext.Provider>
+    </FileContext.Provider>
   );
 };

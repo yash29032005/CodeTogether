@@ -1,13 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
+import { FileContext } from "../Context/FileContext";
 
-const SettingModal = ({
-  isOpen,
-  theme,
-  setTheme,
-  language,
-  setLanguage,
-  setIsOpen,
-}) => {
+const SettingModal = ({ isOpen, setIsOpen }) => {
+  const { theme, setTheme } = useContext(FileContext);
+
   return (
     <div>
       {/* Popup */}
@@ -27,30 +23,6 @@ const SettingModal = ({
               <option value="vs">Light</option>
               <option value="hc-black">High Contrast Dark</option>
               <option value="hc-light">High Contrast Light</option>
-            </select>
-          </div>
-
-          {/* Language Selector */}
-          <div className="mb-3 ">
-            <label className="block mb-1">Language:</label>
-            <select
-              value={language}
-              onChange={(e) => setLanguage(e.target.value)}
-              className="w-full p-1 rounded bg-gray-700 "
-            >
-              <option value="javascript">JavaScript</option>
-              <option value="python">Python</option>
-              <option value="cpp">C++</option>
-              <option value="css">CSS</option>
-              <option value="java">Java</option>
-              <option value="typescript">TypeScript</option>
-              <option value="sql">SQL</option>
-              <option value="php">PHP</option>
-              <option value="ruby">Ruby</option>
-              <option value="go">Go</option>
-              <option value="rust">Rust</option>
-              <option value="csharp">C#</option>
-              <option value="shell">Shell</option>
             </select>
           </div>
 

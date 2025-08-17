@@ -40,11 +40,13 @@ const Modal = ({ setIsOpen }) => {
 
   return (
     <div
-      className="fixed inset-0 backdrop-blur-xs bg-opacity-60 flex items-center justify-center z-50 transition-opacity duration-300 md:mx-0 mx-5"
+      className="fixed inset-0 backdrop-blur-xs bg-opacity-60 flex items-center justify-center z-50 
+      transition-opacity duration-300 md:mx-0 mx-5"
       onClick={() => setIsOpen(false)}
     >
       <div
-        className="bg-gray-700 rounded-2xl p-6 w-full max-w-md shadow-2xl transform transition-all scale-100 hover:scale-[1.01]"
+        className="bg-gray-700 rounded-2xl p-6 w-full max-w-md shadow-2xl transform transition-all 
+        scale-100 hover:scale-[1.01]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}

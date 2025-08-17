@@ -1,8 +1,8 @@
 import React, { useContext } from "react";
-import { OutputContext } from "../../../Context/OutputContext";
+import { FileContext } from "../../../Context/FileContext";
 
 const Output = () => {
-  const { output } = useContext(OutputContext);
+  const { output } = useContext(FileContext);
   return (
     <div className="w-auto bg-gray-850 p-4 text-sm h-auto">
       <h3 className="mb-2 font-bold">Output :</h3>
