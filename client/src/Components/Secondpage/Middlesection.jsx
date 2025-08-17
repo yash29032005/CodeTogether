@@ -52,7 +52,8 @@ const Middlesection = () => {
         i === activeFile
           ? {
               ...file,
-              saved: value === file.content, // true if matches original
+              content: value,
+              saved: false, // true if matches original
             }
           : file
       )

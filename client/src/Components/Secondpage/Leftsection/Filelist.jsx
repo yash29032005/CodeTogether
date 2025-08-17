@@ -15,7 +15,6 @@ const Filelist = () => {
     setActiveFile,
     language,
     setLanguage,
-    setCode,
     code,
   } = useContext(FileContext);
 
@@ -36,23 +35,12 @@ const Filelist = () => {
     setActiveFile(fileName);
   };
 
-  const handleDelete = (name) => {
+  const handleDelete = () => {
     setFiles((prev) => {
       if (prev.length === 1) {
         toast.warning("At least one file must remain in the workspace.");
         return prev; // don't delete
       }
-
-      const updated = prev.filter((file) => file.name !== name);
-
-      // if the deleted file was active, set activeFile to first file
-      if (activeFile === name && updated.length > 0) {
-        setActiveFile(updated[0].name);
-        setCode(updated[0].content);
-        setLanguage(updated[0].lang);
-      }
-
-      return updated;
     });
   };
 
@@ -104,7 +92,6 @@ const Filelist = () => {
           onClick={() => {
             setActiveFile(file.name);
             setLanguage(file.lang);
-            setCode(file.content);
           }}
         >
           <p

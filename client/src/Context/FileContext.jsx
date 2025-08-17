@@ -15,7 +15,7 @@ export const FileProvider = ({ children }) => {
 
   const [activeFile, setActiveFile] = useState(0);
 
-  const [code, setCode] = useState(files[0].content);
+  const [code, setCode] = useState("");
 
   const [output, setOutput] = useState("Execute something");
 
