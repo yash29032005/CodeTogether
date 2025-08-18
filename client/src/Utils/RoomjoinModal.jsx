@@ -1,15 +1,28 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import socket from "../Socket/socket";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { UserContext } from "../Context/UserContext";
 
-const RoomjoinModal = ({ setJoinroommodal }) => {
+const RoomjoinModal = ({ joinroommodal, setJoinroommodal }) => {
   const [roomId, setRoomId] = useState("");
   const { user } = useContext(UserContext);
   const [username, setUsername] = useState(user?.name || "");
   const [copied, setCopied] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (joinroommodal) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [joinroommodal]);
+
+  if (!joinroommodal) return null;
 
   const joinRoom = () => {
     if (user) {
@@ -46,8 +59,8 @@ const RoomjoinModal = ({ setJoinroommodal }) => {
 
   return (
     <div
-      className="fixed inset-0 backdrop-blur-xs bg-opacity-60 flex items-center justify-center 
-      z-50 transition-opacity duration-300 md:mx-0 mx-5 overflow-hidden"
+      className="fixed inset-0 bg-opacity-70 backdrop-blur-xs flex items-center justify-center 
+      z-50 transition-opacity duration-300"
       onClick={() => setJoinroommodal(false)}
     >
       <div
@@ -77,7 +90,7 @@ const RoomjoinModal = ({ setJoinroommodal }) => {
             placeholder="Username"
             required
             className="w-full border border-gray-600 p-3 rounded-lg bg-gray-950 text-white
-             placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-600"
+               placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-600"
           />
           <input
             type="text"
@@ -86,7 +99,7 @@ const RoomjoinModal = ({ setJoinroommodal }) => {
             placeholder="Room ID"
             required
             className="w-full border border-gray-600 p-3 rounded-lg bg-gray-950 text-white
-             placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-600"
+               placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-600"
           />
           <p className="text-sm">
             If you don't have an invite, create a{" "}

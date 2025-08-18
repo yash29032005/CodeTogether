@@ -6,7 +6,7 @@ import { useSearchParams } from "react-router-dom";
 import socket from "../../../Socket/socket";
 
 const Filelist = () => {
-  const [open, setOpen] = useState(false);
+  const [addfilemodal, setAddfilemodal] = useState(false);
   const [fileName, setFileName] = useState("");
   const [searchParams] = useSearchParams();
   const roomId = searchParams.get("roomId");
@@ -52,7 +52,7 @@ const Filelist = () => {
     setActiveFile(fileName);
 
     socket.emit("file-update", { roomId, files: newFiles });
-    setOpen(false);
+    setAddfilemodal(false);
     setFileName("");
   };
 
@@ -100,14 +100,14 @@ const Filelist = () => {
       <div className="flex items-center justify-between border-b border-gray-800 px-2 py-1">
         <p className="text-xs md:text-sm font-bold">Yash's Workspace</p>
         <button
-          onClick={() => setOpen(true)}
+          onClick={() => setAddfilemodal(true)}
           className="bg-gray-900 px-1 hover:bg-gray-800"
         >
           +
         </button>
-        {open && (
+        {addfilemodal && (
           <NewfileModal
-            setOpen={setOpen}
+            setAddfilemodal={setAddfilemodal}
             fileName={fileName}
             setFileName={setFileName}
             handleAdd={handleAdd}
@@ -124,7 +124,7 @@ const Filelist = () => {
             setLanguage(file.lang);
           }}
         >
-          <p
+          <div
             className={`flex justify-between items-center w-auto text-xs m-1 px-3 py-2 
             hover:bg-gray-800 rounded-md ${
               activeFile === file.name ? "bg-gray-800" : "bg-gray-900"
@@ -146,7 +146,7 @@ const Filelist = () => {
             ) : (
               <button className="bg-white h-2 w-2 rounded-sm"></button>
             )}
-          </p>
+          </div>
         </div>
       ))}
     </div>

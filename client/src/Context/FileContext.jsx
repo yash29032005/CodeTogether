@@ -28,10 +28,9 @@ export const FileProvider = ({ children }) => {
     // Save the real console.log
     const originalLog = console.log;
 
-    // Override console.log to capture the printed text
+    // Override console.log to capture the printed text (no real logging now)
     console.log = (...args) => {
       capturedOutput += args.join(" ") + "\n";
-      originalLog(...args); // still logs to the browser console
     };
 
     try {

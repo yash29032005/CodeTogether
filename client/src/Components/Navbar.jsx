@@ -9,6 +9,7 @@ import RegisterModal from "../Utils/RegisterModal";
 import { UserContext } from "../Context/UserContext";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -75,9 +76,15 @@ const Navbar = () => {
 
       {/* Desktop Menu */}
       <div className="hidden md:flex gap-3 items-center">
-        <button className="border border-gray-700 px-3 py-2 rounded bg-transparent text-white hover:bg-green-900 transition">
-          Star on Github
-        </button>
+        <Link
+          to={"https://github.com/yash29032005/CodeTogether"}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <button className="border border-gray-700 px-3 py-2 rounded bg-transparent text-white hover:bg-green-900 transition">
+            Star on Github
+          </button>
+        </Link>
 
         {!user ? (
           <button
@@ -147,9 +154,15 @@ const Navbar = () => {
       {/* Mobile Menu Dropdown */}
       {menuOpen && (
         <div className="absolute top-16 left-0 w-full bg-black/90 flex flex-col items-center gap-4 py-4 md:hidden">
-          <button className="border border-gray-700 px-3 py-2 rounded bg-transparent text-white hover:bg-green-900 transition w-10/12">
-            Star on Github
-          </button>
+          <Link
+            to={"https://github.com/yash29032005/CodeTogether"}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <button className="border border-gray-700 px-3 py-2 rounded bg-transparent text-white hover:bg-green-900 transition w-10/12">
+              Star on Github
+            </button>
+          </Link>
 
           {!user ? (
             <button

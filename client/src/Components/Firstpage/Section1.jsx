@@ -37,7 +37,10 @@ const Section1 = () => {
               Start Coding
             </button>
             {joinroommodal && (
-              <RoomjoinModal setJoinroommodal={setJoinroommodal} />
+              <RoomjoinModal
+                joinroommodal={joinroommodal}
+                setJoinroommodal={setJoinroommodal}
+              />
             )}
           </div>
         </div>

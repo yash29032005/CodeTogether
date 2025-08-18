@@ -43,11 +43,11 @@ const LoginModal = ({ loginmodal, setLoginmodal, openRegister }) => {
   return (
     <div
       className="fixed inset-0 bg-opacity-70 backdrop-blur-xs flex items-center justify-center 
-      z-50 transition-opacity duration-300 md:mx-0 mx-5"
+      z-50 transition-opacity duration-300"
       onClick={() => setLoginmodal(false)}
     >
       <div
-        className="bg-gray-900 rounded-2xl p-8 w-11/12 md:w-9/12 shadow-2xl transform transition-all 
+        className="bg-gray-900 rounded-2xl p-8 w-11/12 md:w-8/12 shadow-2xl transform transition-all 
         duration-300 scale-100 hover:scale-[1.01] border border-gray-800 
         flex flex-col md:flex-row gap-8"
         onClick={(e) => e.stopPropagation()}
