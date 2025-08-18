@@ -32,7 +32,7 @@ export default function Ai() {
     setMessage("");
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/ai`, {
+      const res = await fetch(`${import.meta.env.API_URL}/api/ai`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userPrompt: message }),

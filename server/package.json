@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "start": "nodemon index.js"
+  },
   "dependencies": {
     "@google/genai": "^1.14.0",
     "@google/generative-ai": "^0.24.1",
@@ -12,6 +15,7 @@
     "http": "^0.0.1-security",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.17.1",
+    "nodemon": "^3.1.10",
     "socket.io": "^4.8.1"
   }
 }

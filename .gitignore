@@ -12,3 +12,6 @@ server/dist/
 # Env files
 client/.env
 server/.env
+
+node_modules
+.env

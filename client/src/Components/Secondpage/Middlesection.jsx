@@ -103,9 +103,6 @@ const Middlesection = () => {
     return () => socket.off("file-content-update", handleFileContentUpdate);
   }, [activeFile, setFiles]);
 
-  console.log(code);
-  console.log(language);
-
   return (
     <div className="md:w-7/12 w-full bg-black text-white h-full">
       <div className="border-r border-gray-800 w-full h-full">
