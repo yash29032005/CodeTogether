@@ -9,17 +9,6 @@ const NewfileModal = ({ setOpen, handleAdd, fileName, setFileName }) => {
     plaintext: ".txt",
     java: ".java",
     javascript: ".js",
-    python: ".py",
-    cpp: ".cpp",
-    css: ".css",
-    typescript: ".ts",
-    sql: ".sql",
-    php: ".php",
-    ruby: ".rb",
-    go: ".go",
-    rust: ".rs",
-    csharp: ".cs",
-    shell: ".sh",
   };
 
   // When modal opens, set default name
