@@ -8,10 +8,10 @@ import { ChatProvider } from "./Context/ChatContext.jsx";
 import { ToastContainer } from "react-toastify";
 
 createRoot(document.getElementById("root")).render(
-  <UserProvider>
-    <ChatProvider>
-      <FileProvider>
-        <BrowserRouter>
+  <BrowserRouter>
+    <UserProvider>
+      <ChatProvider>
+        <FileProvider>
           <ToastContainer
             position="top-right"
             autoClose={2000}
@@ -21,8 +21,8 @@ createRoot(document.getElementById("root")).render(
             pauseOnHover
           />
           <App />
-        </BrowserRouter>
-      </FileProvider>
-    </ChatProvider>
-  </UserProvider>
+        </FileProvider>
+      </ChatProvider>
+    </UserProvider>
+  </BrowserRouter>
 );

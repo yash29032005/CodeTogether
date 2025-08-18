@@ -1,12 +1,12 @@
 import TextType from "../../Utils/TestType";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import { CodeBracketIcon } from "@heroicons/react/24/solid";
 import { ShareIcon } from "@heroicons/react/24/solid";
-import Modal from "../../Utils/Modal";
+import RoomjoinModal from "../../Utils/RoomjoinModal";
 
 const Section1 = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [joinroommodal, setJoinroommodal] = useState(false);
+
   return (
     <div
       id="section1"
@@ -31,12 +31,14 @@ const Section1 = () => {
           </p>
           <div className="mt-6 flex gap-4">
             <button
-              onClick={() => setIsOpen(true)}
+              onClick={() => setJoinroommodal(true)}
               className="hover:scale-110 duration-900 ease-in-out px-6 py-3 bg-gradient-to-r from-purple-950 to-green-800 rounded-lg font-medium transition"
             >
               Start Coding
             </button>
-            {isOpen && <Modal setIsOpen={setIsOpen} />}
+            {joinroommodal && (
+              <RoomjoinModal setJoinroommodal={setJoinroommodal} />
+            )}
           </div>
         </div>
 

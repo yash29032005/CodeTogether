@@ -7,10 +7,12 @@ const cors = require("cors");
 const http = require("http");
 const { Server } = require("socket.io");
 const Messages = require("./Model/message.model");
-const promptRoute = require("./Route/prompt.route");
+const allRoute = require("./Route/allRoute");
+const cookieParser = require("cookie-parser");
 
 connectToDB();
 app.use(express.json());
+app.use(cookieParser());
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
@@ -21,10 +23,13 @@ const io = new Server(server, {
 app.use(
   cors({
     origin: `${process.env.WEB_URL}`,
+    methods: ["GET", "POST"],
+    credentials: true,
   })
 );
 
-app.use("/api", promptRoute);
+app.use("/api", allRoute);
+
 let rooms = {}; // roomId -> { users: Set, files: [] }
 
 io.on("connection", (socket) => {

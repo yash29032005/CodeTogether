@@ -11,6 +11,6 @@ const aiLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-Router.post("/ai", aiLimiter, getReply);
+Router.post("/", aiLimiter, getReply);
 
 module.exports = Router;

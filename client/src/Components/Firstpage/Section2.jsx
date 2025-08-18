@@ -40,18 +40,22 @@ const Section2 = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 w-10/12 md:w-8/12 mt-8">
         {features.map((feature, index) => (
-          <SpotlightCard
-            className="custom-spotlight-card transition-all duration-500 ease -in-out hover:scale-105  hover:text-green-600"
-            spotlightColor={
-              "rgba(0, 229, 255, 0.3)" // original cyan glow
-            }
-          >
-            <div key={index} className=" rounded-2xl flex flex-col gap-2 p-4">
-              <div className="text-white">{feature.icon}</div>
-              <div className="font-semibold">{feature.title}</div>
-              <div className="text-sm text-gray-400">{feature.description}</div>
-            </div>
-          </SpotlightCard>
+          <div key={index}>
+            <SpotlightCard
+              className="custom-spotlight-card transition-all duration-500 ease -in-out hover:scale-105  hover:text-green-600"
+              spotlightColor={
+                "rgba(0, 229, 255, 0.3)" // original cyan glow
+              }
+            >
+              <div className=" rounded-2xl flex flex-col gap-2 p-4">
+                <div className="text-white">{feature.icon}</div>
+                <div className="font-semibold">{feature.title}</div>
+                <div className="text-sm text-gray-400">
+                  {feature.description}
+                </div>
+              </div>
+            </SpotlightCard>
+          </div>
         ))}
       </div>
     </div>
