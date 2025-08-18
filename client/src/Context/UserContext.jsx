@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import axios from "axios";
-import { createContext, useEffect, useState } from "react";
+import { createContext, useCallback, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 export const UserContext = createContext();
@@ -8,8 +9,10 @@ export const UserContext = createContext();
 export const UserProvider = ({ children }) => {
   const [users, setUsers] = useState([]);
   const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
-  const checkAuth = async () => {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const checkAuth = useCallback(async () => {
     try {
       const res = await axios.get(
         `${import.meta.env.VITE_API_URL}/api/auth/me`,
@@ -21,11 +24,13 @@ export const UserProvider = ({ children }) => {
     } catch (error) {
       toast.error(error.response?.data?.error || "Unexpected error");
       setUser(null);
+      navigate("/");
     }
-  };
+  });
 
   useEffect(() => {
     checkAuth();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

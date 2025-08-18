@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import { ChatContext } from "../../../Context/ChatContext";
 
 export default function Ai() {
   const [message, setMessage] = useState("");
