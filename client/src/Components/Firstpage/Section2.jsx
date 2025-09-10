@@ -30,7 +30,7 @@ const Section2 = () => {
 
   return (
     <div className="min-h-screen bg-black text-white flex flex-col justify-center items-center py-12">
-      <div className="text-4xl font-bold my-12 text-center">
+      <div className="z-10 text-4xl font-bold my-12 text-center">
         Why developers{" "}
         <span className="bg-gradient-to-r from-purple-950 to-green-800 bg-clip-text text-transparent">
           love

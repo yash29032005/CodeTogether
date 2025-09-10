@@ -7,7 +7,7 @@ function Section3() {
   return (
     <div className="bg-black h-auto flex justify-center items-center py-20 px-5">
       {/* Card */}
-      <div className="bg-gray-900 p-8 rounded-xl border border-purple-500/20 w-10/12 md:w-8/12 text-center">
+      <div className="z-10 bg-gray-900 p-8 rounded-xl border border-purple-500/20 w-10/12 md:w-8/12 text-center">
         {/* Icon */}
         <div className="flex justify-center mb-4 text-purple-0 text-3xl text-white">
           <FaCode />
